@@ -1,0 +1,7 @@
+Django
+#django-tagging
+#django-tinymce
+#django-mptt # necessary patch only in SVN! see http://code.google.com/p/django-mptt/ or http://github.com/matthiask/django-mptt
+#feincms # see http://github.com/matthiask/feincms
+#schedule # see http://wiki.github.com/thauber/django-schedule/ or http://github.com/fiee/django-schedule
+python-dateutil # for django-schedule

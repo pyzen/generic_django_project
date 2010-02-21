@@ -1,0 +1,101 @@
+{% load cache i18n %}{% get_current_language as LANGUAGE_CODE %}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>project_name :: {% block title %}{% trans "Home" %}{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" media="all" href="http://yui.yahooapis.com/2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css">
+        <link rel="stylesheet" type="text/css" media="all" href="http://yui.yahooapis.com/2.8.0r4/build/base/base.css">
+        <link rel="stylesheet" type="text/css" media="screen,projection" href="{{ MEDIA_URL }}css/site.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="{{ MEDIA_URL }}css/{{ LANGUAGE_CODE }}.css" />
+        <link rel="stylesheet" type="text/css" media="print" href="{{ MEDIA_URL }}css/print.css" />
+        <link rel="sitemap" href="/sitemap.xml" type="text/xml" />
+        <!-- <link rel="alternate" type="application/rss+xml" title="{% trans "project_name Termine" %}" href="/calendar/feed/calendar/upcoming/1/"> -->
+        <link rel="shortcut icon" href="{{ MEDIA_URL }}favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="{{ MEDIA_URL }}favicon.ico" type="image/icon" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js">
+        </script>
+        {% block extra_head %}
+        {% endblock %}
+        {% block extrahead %}
+		{% endblock %}
+    </head>
+    <body>
+        {% block header %}
+        <div id="header">
+            <div id="toptext" class="clear">
+                <!-- <span class="left"></span> --><span class="right">
+                    <ul class="headmenu">
+                        <!--
+                        <li>
+                        {% if loggedin %}
+                        <a href="">{% trans "logout" %}</a>
+                        {% else %}
+                        <a href="/admin/">{% trans "login" %}</a>
+                        {% endif %}
+                        </li>
+                        <li>
+                        <a href="/search/">{% trans "search" %}</a>
+                        </li>
+                        -->
+                        <li>
+                            <a href="/impressum/">{% trans "Imprint" %}</a>
+                        </li>
+                    </ul>
+                </span>
+            </div>
+            <div id="toplogo" class="hidden">
+                <img class="logotop" src="{{ MEDIA_URL }}img/logo.png" alt="{{ sitename }} Logo"/><h1 style="position:relative;top:30px;"><img class="logotop" src="{{ MEDIA_URL }}img/title.png" alt="{{ sitename }}" /></h1>
+            </div>
+        </div>{% endblock %}
+        <div id="maincol">
+            <div id="box_content">
+                {% block maincontent %}
+                {% endblock %}
+                {% block body %}
+                {% endblock %}
+            </div>
+        </div>
+        <div id="rightcol">
+            {% block rightcol %}
+            {% endblock %}
+        </div>
+        <div id="leftcol">
+            {% block leftcol %}
+            <ul class="navlist">
+                <li>
+                    <a href="/">{% trans "Home" %}</a>
+                </li>
+                {% if feincms_page %}
+                {% feincms_navigation of feincms_page as sublevel level=1 %}
+                {% for p in sublevel %}
+                <li>
+                    <a href="{{ p.get_absolute_url }}">{{ p.title }}</a>
+                    {% feincms_navigation of p as subsublevel level=2 %}
+                    {% if subsublevel %}
+                    <ul class="subnavlist">
+                        {% for subp in subsublevel %}
+                        <li>
+                            <a href="{{ subp.get_absolute_url }}">{{ subp.title }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+                {% endif %}
+                {% block navigation %}
+                <li>
+                    <a href="/calendar/calendar/year/verein/">{% trans "Calendar" %}</a>
+                </li>
+                {% endblock %}
+            </ul>
+            {% endblock %}
+        </div>
+        <div id="footer-bg" class="clear">
+            <div id="footer">
+                {% block footer %}
+                {% endblock %}
+            </div>
+        </div>
+    </body>
+</html>

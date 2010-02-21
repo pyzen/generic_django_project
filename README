@@ -1,0 +1,55 @@
+generic django project
+======================
+
+This is my starting point for a new django site, mixed and stirred from several public sources and spiced with my own enhancements.
+
+I normally work with FeinCMS and its medialibrary, but sometimes also with photologue and schedule, this is reflected in my setups.
+
+My webserver of choice is nginx/fcgi, since my virtual server is always low on memory. Setup for apache/mod_wsgi is also provided.
+
+
+Requirements
+------------
+
+* server OS: Debian/Ubuntu based Linux
+* local OS: MacOS X (only some local settings are OSX specific)
+* web server: Apache/mod_wsgi or Nginx/fcgi
+* Python version: 2.5+
+* Django version: 1.1 (1.2 coming soon)
+* version control: Git
+* deployment tool: Fabric
+* local development database: SQLite3
+* server database: MySQL or PostgreSQL
+
+
+Rationale
+---------
+
+Django's startproject doesn't do enough. I'm a programmer, thus lazy, and try to reduce redundant work like repeating the same setup steps over and over. (DRY)
+
+Just copying this generic project to a new site isn't ideal either, since general changes don't affect all dependent sites, but I got no idea how to do that.
+
+
+Issues
+------
+
+* I'd like to use South migration, but didn't manage to integrate it with my Git/Fabric workflow.
+* User creation isn't integrated in fabfile setup.
+* Not yet prepared for Django 1.2
+* Probably security holes - use at your own risk.
+
+
+How To
+------
+
+local:
+* copy "generic_project"
+* replace all occurrences of "project_name" with your project name. this is also the webserver and database server username!
+* replace all occurrences of "fiee.net" with your domain name.
+* check the settings in fabfile.py, settings.py, settings_local.py 
+* init git, always commit all changes
+* fab webserver setup (once)
+* fab webserver deploy (publish new release - always last commited version!)
+
+server:
+* create user and sudo-enable it

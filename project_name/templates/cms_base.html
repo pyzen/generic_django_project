@@ -1,0 +1,16 @@
+{% extends "root.html" %}
+{% load feincms_tags feincms_page_tags cache i18n %}
+
+{% block title %}{{ feincms_page.title }}{% endblock %}
+
+{% block maincontent %}
+<div id="breadcrumbs">{% feincms_breadcrumbs feincms_page %}</div>
+<h2>{% block pagetitle %}{{ feincms_page.title }}{% endblock %}</h2>
+{% for content in feincms_page.content.main %}
+	{{ content.render }}
+{% endfor %}
+
+{% endblock %}
+
+{% block rightcol %}
+{% endblock %}
