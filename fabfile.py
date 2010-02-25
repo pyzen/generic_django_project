@@ -84,18 +84,21 @@ def setup():
     
     # new project setup
     sudo('mkdir -p %(path)s; chown %(user)s:%(user)s %(path)s;' % env, pty=True)
-    run('ln -s %(path)s www;' % env, pty=True) # symlink web dir in home
+    env.warn_only=True
+    run('cd ~; ln -s %(path)s www;' % env, pty=True) # symlink web dir in home
+    env.warn_only=False
     with cd(env.path):
         run('virtualenv .')
         env.warn_only=True
         run('mkdir -m a+w logs; mkdir releases; mkdir shared; mkdir packages; mkdir backup;' % env, pty=True)
-        env.warn_only=False
         if env.use_photologue:
             run('mkdir photologue', pty=True)
             #run('pip install -E . -U django-photologue' % env, pty=True)
         if env.use_medialibrary:
             run('mkdir medialibrary', pty=True)
+        env.warn_only=False
         run('cd releases; ln -s . current; ln -s . previous;', pty=True)
+        env.warn_only=False
     if env.use_feincms:
         with cd(env.pysp):
             run('git clone git://github.com/matthiask/django-mptt.git; echo django-mptt > mptt.pth;', pty=True)
