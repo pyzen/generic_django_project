@@ -13,7 +13,11 @@ env.use_feincms = True
 env.use_medialibrary = False # feincms.medialibrary or similar
 env.use_daemontools = False  # not available for hardy heron!
 env.webserver = 'nginx' # nginx or apache2 (directory name below /etc!)
+env.dbserver = 'mysql' # mysql or postgresql
 # TODO: database and SSH setup
+
+env.port = 8080 # local FCGI server
+
 
 # environments
 
@@ -154,7 +158,9 @@ def install_site():
         sudo('cp %(webserver)s.conf /etc/%(webserver)s/sites-available/%(project_name)s' % env, pty=True)
         if env.use_daemontools:
             sudo('cp service-run.sh /etc/service/%(project_name)s/run' % env, pty=True)
-        sudo('cd /etc/%(webserver)s/sites-enabled/; ln -s ../sites-available/%(project_name)s %(project_name)s' % env, pty=True)
+    env.warn_only=True        
+    sudo('cd /etc/%(webserver)s/sites-enabled/; ln -s ../sites-available/%(project_name)s %(project_name)s' % env, pty=True)
+    env.warn_only=False
     
 def install_requirements():
     "Install the required packages from the requirements file using pip"
@@ -177,5 +183,6 @@ def migrate():
     
 def restart_webserver():
     "Restart the web server"
-    run('cd $(path)s; bin/python releases/current/%(project_name)s/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=$PORT pidfile=./logs/django.pid' % env)
+    if env.webserver=='nginx':
+        run('cd $(path)s; bin/python releases/current/%(project_name)s/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=$(port)d pidfile=./logs/django.pid' % env)
     sudo('/etc/init.d/%(webserver)s reload' % env, pty=True)
