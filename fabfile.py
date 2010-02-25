@@ -10,6 +10,7 @@ from fabric.api import *
 env.project_name = 'project_name' # no spaces!
 env.use_photologue = False # django-photologue gallery module
 env.use_medialibrary = False # feincms.medialibrary or similar
+env.use_daemontools = False  # not available for hardy heron!
 env.webserver = 'nginx' # nginx or apache2 (directory name below /etc!)
 
 # environments
@@ -23,7 +24,7 @@ def localhost():
 
 def webserver():
     "Use the actual webserver"
-    env.hosts = ['zipanu.fiee.net'] # Change to your server name!
+    env.hosts = ['webserver.example.com'] # Change to your server name!
     env.user = env.project_name
     env.path = '/var/www/%(project_name)s' % env
     env.virtualhost_path = env.path
@@ -43,7 +44,9 @@ def setup():
     require('hosts', provided_by=[localhost,webserver])
     require('path')
     sudo('apt-get install build-essentials python-dev python-setuptools') # python-imaging?
-    #sudo('apt-get install daemontools') # not available for hardy!
+    if env.use_daemontools:
+        sudo('apt-get install daemontools')
+        sudo('mkdir -p /etc/service/%(project_name)s' % env, pty=True)
     sudo('easy_install pip')
     sudo('pip install -U virtualenv flup')
     if env.webserver=='nginx':
@@ -117,8 +120,11 @@ def upload_tar_from_git():
 def install_site():
     "Add the virtualhost file to the webserver's config"
     require('release', provided_by=[deploy, setup])
-    sudo('cd %(path)s/releases/%(release)s; cp %(webserver)s.conf /etc/%(webserver)s/sites-available/%(project_name)s' % env, pty=True)
-    sudo('cd /etc/%(webserver)s/sites-enabled/; ln -s ../sites-available/%(project_name)s %(project_name)s' % env, pty=True) 
+    with cd('%(path)s/releases/%(release)s' % env):
+        sudo('cp %(webserver)s.conf /etc/%(webserver)s/sites-available/%(project_name)s' % env, pty=True)
+        if env.use_daemontools:
+            sudo('cp service-run.sh /etc/service/%(project_name)s/run' % env, pty=True)
+        sudo('cd /etc/%(webserver)s/sites-enabled/; ln -s ../sites-available/%(project_name)s %(project_name)s' % env, pty=True)
     
 def install_requirements():
     "Install the required packages from the requirements file using pip"
