@@ -9,9 +9,11 @@ from fabric.api import *
 # globals
 env.project_name = 'project_name' # no spaces!
 env.use_photologue = False # django-photologue gallery module
+env.use_feincms = True
 env.use_medialibrary = False # feincms.medialibrary or similar
 env.use_daemontools = False  # not available for hardy heron!
 env.webserver = 'nginx' # nginx or apache2 (directory name below /etc!)
+# TODO: database and SSH setup
 
 # environments
 
@@ -21,6 +23,7 @@ def localhost():
     env.user = 'hraban' # You must create and sudo-enable the user first!
     env.path = '/Users/%(user)s/workspace/%(project_name)s' % env # User home on OSX, TODO: check local OS
     env.virtualhost_path = env.path
+    env.pysp = '%(virtualhost_path)s/lib/python2.6/site-packages' % env
 
 def webserver():
     "Use the actual webserver"
@@ -28,6 +31,7 @@ def webserver():
     env.user = env.project_name
     env.path = '/var/www/%(project_name)s' % env
     env.virtualhost_path = env.path
+    env.pysp = '%(virtualhost_path)s/lib/python2.5/site-packages' % env
     
 # tasks
 
@@ -43,26 +47,52 @@ def setup():
     """
     require('hosts', provided_by=[localhost,webserver])
     require('path')
-    sudo('apt-get install build-essentials python-dev python-setuptools') # python-imaging?
+    # install Python environment
+    sudo('apt-get install -y build-essential python-dev python-setuptools python-imaging')
+    # install some version control systems, since we need Django modules in development
+    sudo('apt-get install -y subversion git-core mercurial')
+
     if env.use_daemontools:
-        sudo('apt-get install daemontools')
+        sudo('apt-get install -y daemontools')
         sudo('mkdir -p /etc/service/%(project_name)s' % env, pty=True)
+        
+    # install more Python stuff
+    sudo('easy_install -U setuptools')
     sudo('easy_install pip')
-    sudo('pip install -U virtualenv flup')
+    sudo('pip install -U virtualenv')
+    
+    # install webserver and database server
+    sudo('apt-get remove -y apache2 apache2-mpm-prefork') # is mostly pre-installed
     if env.webserver=='nginx':
-        sudo('apt-get install nginx')
+        sudo('apt-get install -y nginx')
     else:
-        sudo('apt-get install apache2-threaded')
-        #sudo('aptitude install -y libapache2-mod-wsgi') # outdated on hardy!
+        sudo('apt-get install -y apache2-threaded')
+        sudo('apt-get install -y libapache2-mod-wsgi') # outdated on hardy!
+    if env.dbserver=='mysql':
+        sudo('apt-get install -y mysql-server python-mysqldb')
+    elif env.dbserver=='postgresql':
+        sudo('apt-get install -y postgresql python-psycopg2')
+        
     # disable default site
+    env.warn_only=True
     sudo('cd /etc/%(webserver)s/sites-enabled/; rm default;' % env, pty=True)
+    env.warn_only=False
+    
+    # new project setup
     sudo('mkdir -p %(path)s; chown %(user)s:%(user)s %(path)s;' % env, pty=True)
     run('ln -s %(path)s www;' % env, pty=True) # symlink web dir in home
     with cd(env.path):
-        run('virtualenv .;' % env, pty=True)
-        run('mkdir logs; chmod a+w logs; mkdir releases; mkdir shared; mkdir packages;' % env, pty=True)
-        if env.use_photologue: run('mkdir photologue', pty=True);
-        if env.use_medialibrary: run('mkdir medialibrary', pty=True);
+        run('virtualenv .')
+        run('mkdir -m a+w logs; mkdir releases; mkdir shared; mkdir packages; mkdir backup;' % env, pty=True)
+        if env.use_feincms:
+            with cd(env.pysp):
+                run('git clone git://github.com/matthiask/django-mptt.git; echo django-mptt > mptt.pth;', pty=True)
+                run('git clone git://github.com/matthiask/feincms.git; echo feincms > feincms.pth;', pty=True)
+        if env.use_photologue:
+            run('mkdir photologue', pty=True)
+            #run('pip install -E . -U django-photologue' % env, pty=True)
+        if env.use_medialibrary:
+            run('mkdir medialibrary', pty=True)
         run('cd releases; ln -s . current; ln -s . previous;', pty=True)
     deploy()
     
@@ -147,4 +177,5 @@ def migrate():
     
 def restart_webserver():
     "Restart the web server"
+    run('cd $(path)s; bin/python releases/current/%(project_name)s/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=$PORT pidfile=./logs/django.pid' % env)
     sudo('/etc/init.d/%(webserver)s reload' % env, pty=True)
