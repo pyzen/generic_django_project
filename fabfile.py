@@ -54,7 +54,7 @@ def setup():
     # install Python environment
     sudo('apt-get install -y build-essential python-dev python-setuptools python-imaging')
     # install some version control systems, since we need Django modules in development
-    sudo('apt-get install -y subversion git-core mercurial')
+    sudo('apt-get install -y git-core') # subversion git-core mercurial
 
     if env.use_daemontools:
         sudo('apt-get install -y daemontools')
@@ -90,16 +90,16 @@ def setup():
         env.warn_only=True
         run('mkdir -m a+w logs; mkdir releases; mkdir shared; mkdir packages; mkdir backup;' % env, pty=True)
         env.warn_only=False
-        if env.use_feincms:
-            with cd(env.pysp):
-                run('git clone git://github.com/matthiask/django-mptt.git; echo django-mptt > mptt.pth;', pty=True)
-                run('git clone git://github.com/matthiask/feincms.git; echo feincms > feincms.pth;', pty=True)
         if env.use_photologue:
             run('mkdir photologue', pty=True)
             #run('pip install -E . -U django-photologue' % env, pty=True)
         if env.use_medialibrary:
             run('mkdir medialibrary', pty=True)
         run('cd releases; ln -s . current; ln -s . previous;', pty=True)
+    if env.use_feincms:
+        with cd(env.pysp):
+            run('git clone git://github.com/matthiask/django-mptt.git; echo django-mptt > mptt.pth;', pty=True)
+            run('git clone git://github.com/matthiask/feincms.git; echo feincms > feincms.pth;', pty=True)
     deploy()
     
 def deploy():
