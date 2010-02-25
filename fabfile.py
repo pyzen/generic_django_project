@@ -87,7 +87,9 @@ def setup():
     run('ln -s %(path)s www;' % env, pty=True) # symlink web dir in home
     with cd(env.path):
         run('virtualenv .')
+        env.warn_only=True
         run('mkdir -m a+w logs; mkdir releases; mkdir shared; mkdir packages; mkdir backup;' % env, pty=True)
+        env.warn_only=False
         if env.use_feincms:
             with cd(env.pysp):
                 run('git clone git://github.com/matthiask/django-mptt.git; echo django-mptt > mptt.pth;', pty=True)
