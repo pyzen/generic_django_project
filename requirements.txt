@@ -7,4 +7,5 @@ django-tinymce
 #feincms # see http://github.com/matthiask/feincms
 #django-photologue
 #python-dateutil # for django-schedule
+#vobject # for django-schedule
 #django-schedule # see http://wiki.github.com/thauber/django-schedule/ or http://github.com/fiee/django-schedule
