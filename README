@@ -79,9 +79,10 @@ Links / Sources
 * Setup with Apache/mod_wsgi: http://morethanseven.net/2009/07/27/fabric-django-git-apache-mod_wsgi-virtualenv-and-p/
 * Setup with Nginx: http://djangoadvent.com/1.2/deploying-django-site-using-fastcgi/
 * Nginx configuration: http://wiki.nginx.org/NginxConfiguration
-
+* logrotate: e.g. http://www.linux-praxis.de/lpic1/manpages/logrotate.html
 
 Modules:
+* Fabric: http://docs.fabfile.org
 * MPTT: http://code.google.com/p/django-mptt/ or http://github.com/matthiask/django-mptt
 * FeinCMS: http://github.com/matthiask/feincms
 * Schedule: http://wiki.github.com/thauber/django-schedule/ or http://github.com/fiee/django-schedule

@@ -78,27 +78,23 @@ def setup():
         sudo('apt-get install -y postgresql python-psycopg2')
         
     # disable default site
-    env.warn_only=True
-    sudo('cd /etc/%(webserver)s/sites-enabled/; rm default;' % env, pty=True)
-    env.warn_only=False
+    with settings(warn_only=True):
+        sudo('cd /etc/%(webserver)s/sites-enabled/; rm default;' % env, pty=True)
     
     # new project setup
     sudo('mkdir -p %(path)s; chown %(user)s:%(user)s %(path)s;' % env, pty=True)
-    env.warn_only=True
-    run('cd ~; ln -s %(path)s www;' % env, pty=True) # symlink web dir in home
-    env.warn_only=False
+    with settings(warn_only=True):
+        run('cd ~; ln -s %(path)s www;' % env, pty=True) # symlink web dir in home
     with cd(env.path):
         run('virtualenv .')
-        env.warn_only=True
-        run('mkdir -m a+w logs; mkdir releases; mkdir shared; mkdir packages; mkdir backup;' % env, pty=True)
-        if env.use_photologue:
-            run('mkdir photologue', pty=True)
-            #run('pip install -E . -U django-photologue' % env, pty=True)
-        if env.use_medialibrary:
-            run('mkdir medialibrary', pty=True)
-        env.warn_only=False
-        run('cd releases; ln -s . current; ln -s . previous;', pty=True)
-        env.warn_only=False
+        with settings(warn_only=True):
+            run('mkdir -m a+w logs; mkdir releases; mkdir shared; mkdir packages; mkdir backup;' % env, pty=True)
+            if env.use_photologue:
+                run('mkdir photologue', pty=True)
+                #run('pip install -E . -U django-photologue' % env, pty=True)
+            if env.use_medialibrary:
+                run('mkdir medialibrary', pty=True)
+            run('cd releases; ln -s . current; ln -s . previous;', pty=True)
     if env.use_feincms:
         with cd(env.pysp):
             run('git clone git://github.com/matthiask/django-mptt.git; echo django-mptt > mptt.pth;', pty=True)
@@ -157,15 +153,17 @@ def upload_tar_from_git():
     local('rm %(release)s.tar.gz' % env)
     
 def install_site():
-    "Add the virtualhost file to the webserver's config"
+    "Add the virtualhost config file to the webserver's config"
     require('release', provided_by=[deploy, setup])
     with cd('%(path)s/releases/%(release)s' % env):
         sudo('cp %(webserver)s.conf /etc/%(webserver)s/sites-available/%(project_name)s' % env, pty=True)
         if env.use_daemontools:
             sudo('cp service-run.sh /etc/service/%(project_name)s/run' % env, pty=True)
-    env.warn_only=True        
-    sudo('cd /etc/%(webserver)s/sites-enabled/; ln -s ../sites-available/%(project_name)s %(project_name)s' % env, pty=True)
-    env.warn_only=False
+        # try logrotate
+        with settings(warn_only=True):        
+            sudo('cp logrotate.conf /etc/logrotate.d/website-%(project_name)s' % env, pty=True)
+    with settings(warn_only=True):        
+        sudo('cd /etc/%(webserver)s/sites-enabled/; ln -s ../sites-available/%(project_name)s %(project_name)s' % env, pty=True)
     
 def install_requirements():
     "Install the required packages from the requirements file using pip"
