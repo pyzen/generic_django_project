@@ -28,6 +28,7 @@ def localhost():
     env.path = '/Users/%(user)s/workspace/%(project_name)s' % env # User home on OSX, TODO: check local OS
     env.virtualhost_path = env.path
     env.pysp = '%(virtualhost_path)s/lib/python2.6/site-packages' % env
+    env.tmppath = '/var/tmp/django_cache/%(project_name)s' % env
 
 def webserver():
     "Use the actual webserver"
@@ -36,7 +37,8 @@ def webserver():
     env.path = '/var/www/%(project_name)s' % env
     env.virtualhost_path = env.path
     env.pysp = '%(virtualhost_path)s/lib/python2.5/site-packages' % env
-    
+    env.tmppath = '/var/tmp/django_cache/%(project_name)s' % env
+   
 # tasks
 
 def test():
@@ -66,11 +68,11 @@ def setup():
     sudo('pip install -U virtualenv')
     
     # install webserver and database server
-    sudo('apt-get remove -y apache2 apache2-mpm-prefork') # is mostly pre-installed
+    sudo('apt-get remove -y apache2 apache2-mpm-prefork apache2-utils') # is mostly pre-installed
     if env.webserver=='nginx':
         sudo('apt-get install -y nginx')
     else:
-        sudo('apt-get install -y apache2-threaded')
+        sudo('apt-get install -y apache2-mpm-worker apache2-utils') # apache2-threaded
         sudo('apt-get install -y libapache2-mod-wsgi') # outdated on hardy!
     if env.dbserver=='mysql':
         sudo('apt-get install -y mysql-server python-mysqldb')
@@ -83,6 +85,7 @@ def setup():
     
     # new project setup
     sudo('mkdir -p %(path)s; chown %(user)s:%(user)s %(path)s;' % env, pty=True)
+    sudo('mkdir -p %(tmppath)s; chown %(user)s:%(user)s %(tmppath)s;' % env, pty=True)
     with settings(warn_only=True):
         run('cd ~; ln -s %(path)s www;' % env, pty=True) # symlink web dir in home
     with cd(env.path):

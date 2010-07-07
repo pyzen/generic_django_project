@@ -1,4 +1,5 @@
 flup
+#python-memcached # for memcached cache (you must install that separately)
 Django
 south
 django-tagging

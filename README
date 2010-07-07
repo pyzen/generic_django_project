@@ -15,11 +15,12 @@ Requirements
 * local OS: MacOS X (only some local settings are OSX specific)
 * web server: Apache/mod_wsgi or Nginx/fcgi
 * Python version: 2.5+
-* Django version: 1.1 (1.2 coming soon)
+* Django version: 1.2
 * version control: Git
 * deployment tool: Fabric
 * local development database: SQLite3
 * server database: MySQL or PostgreSQL
+* database migration: South
 
 
 Rationale
@@ -33,9 +34,7 @@ Just copying this generic project to a new site isn't ideal either, since genera
 Issues
 ------
 
-* I'd like to use South migration, but didn't manage to integrate it with my Git/Fabric workflow.
 * User creation isn't integrated in fabfile setup.
-* Not yet prepared for Django 1.2
 * Probably security holes - use at your own risk.
 
 
@@ -48,6 +47,7 @@ local:
 * replace all occurrences of "fiee.net" with your domain name.
 * check the settings in fabfile.py, settings.py, settings_local.py 
 * init git, always commit all changes
+* manage syncdb (initialize south)
 * fab webserver setup (once)
 * fab webserver deploy (publish new release - always last commited version!)
 
@@ -83,6 +83,7 @@ Links / Sources
 
 Modules:
 * Fabric: http://docs.fabfile.org
+* South: http://south.aeracode.org/ (Getting started: http://mitchfournier.com/?p=25)
 * MPTT: http://code.google.com/p/django-mptt/ or http://github.com/matthiask/django-mptt
 * FeinCMS: http://github.com/matthiask/feincms
 * Schedule: http://wiki.github.com/thauber/django-schedule/ or http://github.com/fiee/django-schedule
