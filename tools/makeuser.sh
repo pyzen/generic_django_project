@@ -21,9 +21,11 @@ echo "Adding ${USER} to group wheel"
 adduser "${USER}" wheel
 
 echo "Creating website directory ${WEBDIR}/${USER}"
+# already in fabfile
 mkdir "${WEBDIR}/${USER}"
 chown -R "${USER}:${USER}" "${WEBDIR}/${USER}"
 echo "Creating symlink in user's home"
+# already in fabfile
 ln -s "${WEBDIR}/${USER}" "/home/${USER}/www"
 chown -R "${USER}:${USER}" "/home/${USER}"
 
