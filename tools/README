@@ -6,3 +6,6 @@ Server management helpers for my setup:
 * makeuser.sh: create user, database and web directory for a new project
 * nginxsite.sh: start/stop one Django site running on fcgi behind Nginx
 * websites-init.sh: start/stop/restart all Django sites (use e.g. as startup script)
+* copysite.sh: copy a complete site from another server (use for server migrations)
+
+Some of these functions will migrate to the fabfile sometime...
