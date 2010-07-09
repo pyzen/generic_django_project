@@ -14,10 +14,7 @@ env.use_medialibrary = False # feincms.medialibrary or similar
 env.use_daemontools = False  # not available for hardy heron!
 env.webserver = 'nginx' # nginx or apache2 (directory name below /etc!)
 env.dbserver = 'mysql' # mysql or postgresql
-# TODO: database and SSH setup
-
-env.port = 8080 # local FCGI server
-
+# TODO: database and SSH setup, see tools/makeuser.sh
 
 # environments
 
@@ -29,6 +26,7 @@ def localhost():
     env.virtualhost_path = env.path
     env.pysp = '%(virtualhost_path)s/lib/python2.6/site-packages' % env
     env.tmppath = '/var/tmp/django_cache/%(project_name)s' % env
+    env.port = 8080 # local FCGI server
 
 def webserver():
     "Use the actual webserver"
@@ -38,6 +36,7 @@ def webserver():
     env.virtualhost_path = env.path
     env.pysp = '%(virtualhost_path)s/lib/python2.5/site-packages' % env
     env.tmppath = '/var/tmp/django_cache/%(project_name)s' % env
+    env.port = '80'+run('id -u', pty=True) # FCGI server
    
 # tasks
 
@@ -102,9 +101,9 @@ def setup():
         with cd(env.pysp):
             run('git clone git://github.com/matthiask/django-mptt.git; echo django-mptt > mptt.pth;', pty=True)
             run('git clone git://github.com/matthiask/feincms.git; echo feincms > feincms.pth;', pty=True)
-    deploy()
+    deploy('first')
     
-def deploy():
+def deploy(param=''):
     """
     Deploy the latest version of the site to the servers, install any
     required third party modules, install the virtual host and 
@@ -118,7 +117,7 @@ def deploy():
     install_requirements()
     install_site()
     symlink_current_release()
-    migrate()
+    migrate(param)
     restart_webserver()
     
 def deploy_version(version):
@@ -142,6 +141,7 @@ def rollback():
         run('mv releases/current releases/_previous;', pty=True)
         run('mv releases/previous releases/current;', pty=True)
         run('mv releases/_previous releases/previous;', pty=True)
+        # TODO: use South to migrate back
     restart_webserver()    
     
 # Helpers. These are called by other functions rather than directly
@@ -156,7 +156,7 @@ def upload_tar_from_git():
     local('rm %(release)s.tar.gz' % env)
     
 def install_site():
-    "Add the virtualhost config file to the webserver's config"
+    "Add the virtualhost config file to the webserver's config, activate logrotate"
     require('release', provided_by=[deploy, setup])
     with cd('%(path)s/releases/%(release)s' % env):
         sudo('cp %(webserver)s.conf /etc/%(webserver)s/sites-available/%(project_name)s' % env, pty=True)
@@ -182,11 +182,17 @@ def symlink_current_release():
         if env.use_photologue:
             run('cd releases/current/%(project_name)s/static; rm -rf photologue; ln -s %(path)s/photologue;' % env, pty=True)
     
-def migrate():
-    "Update the database (doesn't really make sense - no migration)"
+def migrate(param=''):
+    "Update the database"
     require('project_name')
     require('path')
-    run('cd %(path)s/releases/current/%(project_name)s; %(path)s/bin/python manage.py syncdb --noinput' % env, pty=True)
+    env.southparam = '--auto'
+    if param=='first':
+        run('cd %(path)s/releases/current/%(project_name)s; %(path)s/bin/python manage.py syncdb --noinput' % env, pty=True)
+        env.southparam = '--initial'
+    with cd('%(path)s/releases/current/%(project_name)s' % env):
+        run('%(path)s/bin/python manage.py schemamigration %(project_name)s %(southparam)s && %(path)s/bin/python manage.py migrate %(project_name)s' % env)
+        # TODO: should also migrate other apps!
     
 def restart_webserver():
     "Restart the web server"
