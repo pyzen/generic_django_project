@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 SITE=project_name
-PORT=8090
+PORT=80`id -u $SITE`
 SITEUSER=$SITE
 
 SITEDIR=/var/www/${SITE}
