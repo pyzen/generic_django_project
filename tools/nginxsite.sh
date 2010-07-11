@@ -9,7 +9,7 @@ then
 	SITE=$1
 else
 	echo "Usage: $0 sitename start/stop [debug]"
-	echo "Server will run on port 80+UID (e.g. 801000)"
+	echo "Server will run on port 8+last 3 of UID (e.g. 8001)"
 	exit 1
 fi
 
@@ -40,7 +40,9 @@ PYTHON=/var/www/${SITE}/bin/python
 SITEUSER=$SITE
 PIDFILE=/var/www/${SITE}/logs/django.pid
 DJANGODIR=/var/www/${SITE}/releases/current/${SITE}
-PORT=80`id -u $SITE`
+# PORT is 8 + last 3 numbers of user ID (starting at 1000 on Debian)
+PORT=`id -u $SITE`
+PORT=8${PORT#1}
 
 if [ $COMMAND == "stop" ]
 then

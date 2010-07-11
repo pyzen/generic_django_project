@@ -26,7 +26,6 @@ def localhost():
     env.virtualhost_path = env.path
     env.pysp = '%(virtualhost_path)s/lib/python2.6/site-packages' % env
     env.tmppath = '/var/tmp/django_cache/%(project_name)s' % env
-    env.port = 8080 # local FCGI server
 
 def webserver():
     "Use the actual webserver"
@@ -36,7 +35,6 @@ def webserver():
     env.virtualhost_path = env.path
     env.pysp = '%(virtualhost_path)s/lib/python2.5/site-packages' % env
     env.tmppath = '/var/tmp/django_cache/%(project_name)s' % env
-    env.port = '80'+run('id -u', pty=True) # FCGI server
    
 # tasks
 
@@ -197,6 +195,7 @@ def migrate(param=''):
 def restart_webserver():
     "Restart the web server"
     require('webserver')
+    env.port = '8'+run('id -u', pty=True)[1:]
     if env.webserver=='nginx':
         require('path')
         require('project_name')
