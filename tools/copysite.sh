@@ -14,6 +14,7 @@ for CDIR in $CONTENTDIRS
 do
   echo "SCP tries to copy $CDIR from $OLDSERVER..."
   scp -pr root@$OLDSERVER:$WWWDIR/$SITE/$CDIR $WWWDIR/$SITE/
+  chown -R $SITE:$SITE $WWWDIR/$SITE/$CDIR
 done
 
 gunzip `ls -t $WWWDIR/$SITE/backup/*.sql.gz | head -1`
