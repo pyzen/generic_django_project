@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
+# service runner for daemontools
 SITE=project_name
-PORT=80`id -u $SITE`
 SITEUSER=$SITE
+# PORT is 8 + last 3 numbers of user ID (starting at 1000 on Debian)
+PORT=`id -u $SITE`
+PORT=8${PORT#1}
 
 SITEDIR=/var/www/${SITE}
 DJANGODIR=${SITEDIR}/releases/current/${SITE}

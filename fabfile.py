@@ -11,7 +11,7 @@ env.project_name = 'project_name' # no spaces!
 env.use_photologue = False # django-photologue gallery module
 env.use_feincms = True
 env.use_medialibrary = False # feincms.medialibrary or similar
-env.use_daemontools = False  # not available for hardy heron!
+env.use_daemontools = True  # not available for hardy heron!
 env.webserver = 'nginx' # nginx or apache2 (directory name below /etc!)
 env.dbserver = 'mysql' # mysql or postgresql
 # TODO: database and SSH setup, see tools/makeuser.sh
