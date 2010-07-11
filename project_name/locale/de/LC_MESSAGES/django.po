@@ -1,11 +1,11 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Henning Hraban Ramm <hraba@fiee.net>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Geburt & Leben\n"
+"Project-Id-Version: project_name\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-08-03 17:32+0200\n"
 "PO-Revision-Date: 2009-08-03 17:33+0100\n"
@@ -17,6 +17,7 @@ msgstr ""
 "X-Poedit-Language: German\n"
 "X-Poedit-Country: Germany\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 #: models.py:18
 msgid "Standard template"

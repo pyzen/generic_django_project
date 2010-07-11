@@ -2,8 +2,8 @@ flup
 #python-memcached # for memcached cache (you must install that separately)
 Django
 south
-django-tagging
-django-tinymce
+#django-tagging
+#django-tinymce
 #django-mptt # necessary patch only in SVN! see http://code.google.com/p/django-mptt/ or http://github.com/matthiask/django-mptt
 #feincms # see http://github.com/matthiask/feincms
 #django-photologue

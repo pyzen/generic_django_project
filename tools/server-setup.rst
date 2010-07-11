@@ -31,3 +31,8 @@ export PATH=$PATH:/var/opt/context/tex/texmf-linux-64/bin
 
 # TODO: SSH setup
 # copy authenticated_hosts to /etc/skel/.ssh
+
+# Nginx setup
+# replace /etc/nginx/fastcgi_params
+# change nginx.conf according to my comments (or replace it)
+# add /etc/nginx/proxy.conf (my generic nginx.conf relies on it)

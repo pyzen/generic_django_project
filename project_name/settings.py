@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os, sys
-#from django.utils.translation import ugettext_lazy as _ # don't import translation in settings!
+from django.utils.translation import ugettext_lazy as _
+# docs say: don't import translation in settings, but it works...
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 PROJECT_NAME = os.path.split(PROJECT_ROOT)[-1]
 
-_ = lambda s: s
+#_ = lambda s: s
 rel = lambda p: os.path.join(PROJECT_ROOT, p) # this is release and virtualenv dependent
 rootrel = lambda p: os.path.join('/var/www', PROJECT_NAME, p) # this is not
 
@@ -41,7 +42,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DEFAULT_FROM_EMAIL = 'website@fiee.net'
+DEFAULT_FROM_EMAIL = '%s@fiee.net' % PROJECT_NAME
 SERVER_EMAIL = 'error-notify@fiee.net'
 
 EMAIL_SUBJECT_PREFIX = '[%s] ' % PROJECT_NAME
