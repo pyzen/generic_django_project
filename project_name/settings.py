@@ -185,7 +185,7 @@ except NameError:
 # feincms
 FEINCMS_ADMIN_MEDIA = '/feincms_admin_media/'
 FEINCMS_ADMIN_MEDIA_HOTLINKING = True
-FEINCMS_MEDIALIBRARY_ROOT = rootrel('medialibrary') #'/var/www/project_name/medialibrary/'
+FEINCMS_MEDIALIBRARY_ROOT = rootrel('') #'/var/www/project_name/medialibrary/'
 #FEINCMS_MEDIALIBRARY_UPLOAD_TO
 FEINCMS_MEDIALIBRARY_URL = '/' #'/medialibrary/'
 
