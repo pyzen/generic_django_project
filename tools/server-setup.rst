@@ -36,3 +36,9 @@ export PATH=$PATH:/var/opt/context/tex/texmf-linux-64/bin
 # replace /etc/nginx/fastcgi_params
 # change nginx.conf according to my comments (or replace it)
 # add /etc/nginx/proxy.conf (my generic nginx.conf relies on it)
+
+# start services
+update-rc.d some_script defaults 09
+
+# delete apache start scripts
+update-rc.d -f apache2 remove

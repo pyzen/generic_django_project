@@ -56,7 +56,7 @@ def setup():
     sudo('apt-get install -y git-core') # subversion git-core mercurial
 
     if env.use_daemontools:
-        sudo('apt-get install -y daemontools')
+        sudo('apt-get install -y daemontools daemontools-run')
         sudo('mkdir -p /etc/service/%(project_name)s' % env, pty=True)
         
     # install more Python stuff
@@ -159,7 +159,7 @@ def install_site():
     with cd('%(path)s/releases/%(release)s' % env):
         sudo('cp %(webserver)s.conf /etc/%(webserver)s/sites-available/%(project_name)s' % env, pty=True)
         if env.use_daemontools:
-            sudo('cp service-run.sh /etc/service/%(project_name)s/run' % env, pty=True)
+            sudo('cp service-run.sh /etc/service/%(project_name)s/run; chmod a+x /etc/service/%(project_name)s/run;' % env, pty=True)
         # try logrotate
         with settings(warn_only=True):        
             sudo('cp logrotate.conf /etc/logrotate.d/website-%(project_name)s' % env, pty=True)
