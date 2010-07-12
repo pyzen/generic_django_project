@@ -14,5 +14,5 @@ PIDFILE=${SITEDIR}/logs/django.pid
 # activate virtualenv
 source ${SITEDIR}/bin/activate
 cd ${SITEDIR}
-# run django FCGI server
+# run django FCGI server; daemonize=false is right for daemontools!
 exec envuidgid $SITEUSER $PYTHON $DJANGODIR/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=$PORT pidfile=$PIDFILE daemonize=false
