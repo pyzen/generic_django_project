@@ -58,7 +58,7 @@ server:
   adduser project_name
   adduser project_name wheel
 
-* create database user and database (schema)
+* create database user and database (schema) - I suggest to use tools/makeuser.sh
 
   mysql -u root -p
   # we installed MySQL without user interaction, so there's no root password. Set it!
