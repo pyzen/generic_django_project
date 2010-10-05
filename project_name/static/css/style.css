@@ -1,10 +1,22 @@
 html {
-    quotes: "\201E" "\201C" "\201A" "\2018";
 	color: black;
-	background-color: #fff1cd;
-	background-image: url(../img/hintergrund.png);
-	background-position: top left;
-	background-repeat: no-repeat;
+  background-color: #6cf;
+  background: -webkit-gradient(linear, center top, center bottom, from(#cff), to(#6cf));
+  background-attachment: fixed;
+  background-position: top left;
+  background-repeat: no-repeat;
+}
+
+html[lang|="de"] {
+    quotes: "\201E" "\201C" "\201A" "\2018";
+}
+
+html[lang|="en"] {
+    quotes: "\201C" "\201D" "\2018" "\2019";
+}
+
+html[lang|="fr"] {
+    quotes: "\00AB" "\00BB" "\2039" "\203A";
 }
 
 body {
