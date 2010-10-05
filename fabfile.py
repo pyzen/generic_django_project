@@ -51,7 +51,7 @@ def setup():
     require('hosts', provided_by=[localhost,webserver])
     require('path')
     # install Python environment
-    sudo('apt-get install -y build-essential python-dev python-setuptools python-imaging')
+    sudo('apt-get install -y build-essential python-dev python-setuptools python-imaging python-virtualenv python-yaml')
     # install some version control systems, since we need Django modules in development
     sudo('apt-get install -y git-core') # subversion git-core mercurial
 
@@ -60,9 +60,8 @@ def setup():
         sudo('mkdir -p /etc/service/%(project_name)s' % env, pty=True)
         
     # install more Python stuff
-    sudo('easy_install -U setuptools')
+    # Don't install setuptools or virtualenv on Ubuntu with easy_install or pip! Only Ubuntu packages work!
     sudo('easy_install pip')
-    sudo('pip install -U virtualenv')
     
     # install webserver and database server
     sudo('apt-get remove -y apache2 apache2-mpm-prefork apache2-utils') # is mostly pre-installed
@@ -86,9 +85,9 @@ def setup():
     with settings(warn_only=True):
         run('cd ~; ln -s %(path)s www;' % env, pty=True) # symlink web dir in home
     with cd(env.path):
-        run('virtualenv .')
+        run('virtualenv .') # activate with 'source ~/www/bin/activate'
         with settings(warn_only=True):
-            run('mkdir -m a+w logs; mkdir releases; mkdir shared; mkdir packages; mkdir backup;' % env, pty=True)
+            run('mkdir -m a+w logs; mkdir releases; mkdir shared; mkdir packages; mkdir backup;', pty=True)
             if env.use_photologue:
                 run('mkdir photologue', pty=True)
                 #run('pip install -E . -U django-photologue' % env, pty=True)
@@ -188,9 +187,9 @@ def migrate(param=''):
     if param=='first':
         run('cd %(path)s/releases/current/%(project_name)s; %(path)s/bin/python manage.py syncdb --noinput' % env, pty=True)
         env.southparam = '--initial'
-    with cd('%(path)s/releases/current/%(project_name)s' % env):
-        run('%(path)s/bin/python manage.py schemamigration %(project_name)s %(southparam)s && %(path)s/bin/python manage.py migrate %(project_name)s' % env)
-        # TODO: should also migrate other apps!
+    #with cd('%(path)s/releases/current/%(project_name)s' % env):
+    #    run('%(path)s/bin/python manage.py schemamigration %(project_name)s %(southparam)s && %(path)s/bin/python manage.py migrate %(project_name)s' % env)
+    #    # TODO: should also migrate other apps! get migrations from previous releases
     
 def restart_webserver():
     "Restart the web server"
@@ -199,5 +198,6 @@ def restart_webserver():
     if env.webserver=='nginx':
         require('path')
         require('project_name')
-        run('cd %(path)s; bin/python releases/current/%(project_name)s/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=%(port)s pidfile=./logs/django.pid' % env)
+        sudo('cd %(path)s/logs; kill `cat django.pid`' % env, pty=True) # kill process, daemontools will start it again, see service-run.sh
+        #run('cd %(path)s; bin/python releases/current/%(project_name)s/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=%(port)s pidfile=./logs/django.pid' % env)
     sudo('/etc/init.d/%(webserver)s reload' % env, pty=True)
