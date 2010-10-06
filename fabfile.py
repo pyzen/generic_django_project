@@ -195,9 +195,11 @@ def restart_webserver():
     "Restart the web server"
     require('webserver')
     env.port = '8'+run('id -u', pty=True)[1:]
-    if env.webserver=='nginx':
-        require('path')
-        require('project_name')
-        sudo('cd %(path)s/logs; kill `cat django.pid`' % env, pty=True) # kill process, daemontools will start it again, see service-run.sh
-        #run('cd %(path)s; bin/python releases/current/%(project_name)s/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=%(port)s pidfile=./logs/django.pid' % env)
-    sudo('/etc/init.d/%(webserver)s reload' % env, pty=True)
+    with settings(warn_only=True):
+        if env.webserver=='nginx':
+            require('path')
+            sudo('kill `cat %(path)s/logs/django.pid`' % env, pty=True) # kill process, daemontools will start it again, see service-run.sh
+            if not env.use_daemontools:
+                require('project_name')
+                run('cd %(path)s; bin/python releases/current/%(project_name)s/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=%(port)s pidfile=./logs/django.pid' % env)
+        sudo('/etc/init.d/%(webserver)s reload' % env, pty=True)
