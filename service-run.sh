@@ -17,4 +17,6 @@ LOGS="outlog=${LOGDIR}/info.log errlog=${LOGDIR}/error.log"
 source ${SITEDIR}/bin/activate
 cd ${SITEDIR}
 # run django FCGI server; daemonize=false is right for daemontools!
-setuidgid $SITEUSER $PYTHON $DJANGODIR/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=$PORT pidfile=$PIDFILE daemonize=false $LOGS
+#exec setuidgid $SITEUSER $PYTHON $DJANGODIR/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=$PORT pidfile=$PIDFILE daemonize=false $LOGS
+# run Gunicorn server
+exec setuidgid $SITEUSER $PYTHON $DJANGODIR/manage.py run_gunicorn -c ${SITEDIR}/releases/current/gunicorn-settings.py

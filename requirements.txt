@@ -1,4 +1,5 @@
-flup
+gunicorn # not with fcgi
+#flup # for fcgi
 #python-memcached # for memcached cache (you must install that separately)
 Django
 south
@@ -10,3 +11,5 @@ south
 #python-dateutil # for django-schedule
 #vobject # for django-schedule
 #django-schedule # see http://wiki.github.com/thauber/django-schedule/ or http://github.com/fiee/django-schedule
+#django-guardian
+#django-debug-toolbar
