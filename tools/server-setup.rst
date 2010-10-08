@@ -42,3 +42,7 @@ update-rc.d some_script defaults 09
 
 # delete apache start scripts
 update-rc.d -f apache2 remove
+
+# adapt /etc/supervisord.conf
+# [include]
+# files=/etc/supervisor/*.ini

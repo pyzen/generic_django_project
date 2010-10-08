@@ -5,7 +5,7 @@ This is my starting point for a new django site, mixed and stirred from several 
 
 I normally work with FeinCMS and its medialibrary, but sometimes also with photologue and schedule, this is reflected in my setups.
 
-My webserver of choice is nginx/gunicorn, since my virtual server is always low on memory. Setup for apache/mod_wsgi and Nginx/fcgi is also provided.
+My webserver of choice is nginx/gunicorn, since my virtual server is always low on memory. Setup for apache/mod_wsgi and nginx/fcgi is also provided.
 
 
 Requirements
@@ -21,6 +21,7 @@ Requirements
 * local development database: SQLite3
 * server database: MySQL or PostgreSQL
 * database migration: South
+* process control (optional): daemontools or supervisor
 
 
 Rationale
@@ -36,7 +37,7 @@ Issues
 
 * User creation isn't integrated in fabfile setup.
 * Probably security holes - use at your own risk.
-* Perhaps replace daemontools with supervisor?
+* I could also support runit, but I didn't want to replace init
 
 
 How To
@@ -46,7 +47,7 @@ local:
 * copy "generic_project"
 * replace all occurrences of "project_name" with your project name. this is also the webserver and database server username!
 * replace all occurrences of "fiee.net" with your domain name.
-* check the settings in fabfile.py, gunicorn-settings.py, settings.py, settings_local.py
+* check the settings in fabfile.py, gunicorn-settings.py, settings.py, settings_local.py, supervisor.ini or service-run.sh
 * if you use nginx, change the internal port in nginx.conf (fastcgi_pass 127.0.0.1:8001;); I use "8 + last 3 numbers of UID" (UIDs start at 1000 on Debian)
 * init git, always commit all changes
 * manage syncdb (initialize south)
@@ -83,6 +84,8 @@ Links / Sources
 * Nginx configuration: http://wiki.nginx.org/NginxConfiguration
 * Gunicorn configuration: http://gunicorn.org/configure.html
 * logrotate: e.g. http://www.linux-praxis.de/lpic1/manpages/logrotate.html
+* daemontools: http://cr.yp.to/daemontools.html
+* supervisor: http://supervisord.org
 
 Modules:
 * Fabric: http://docs.fabfile.org

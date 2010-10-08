@@ -10,8 +10,10 @@ from fabric.api import *
 env.project_name = 'project_name' # no spaces!
 env.use_photologue = False # django-photologue gallery module
 env.use_feincms = True
-env.use_medialibrary = False # feincms.medialibrary or similar
-env.use_daemontools = True  # not available for hardy heron!
+env.use_medialibrary = True # feincms.medialibrary or similar
+env.use_daemontools = False
+env.use_supervisor = True
+env.use_celery = False
 env.webserver = 'nginx' # nginx or apache2 (directory name below /etc!)
 env.dbserver = 'mysql' # mysql or postgresql
 # TODO: database and SSH setup, see tools/makeuser.sh
@@ -58,6 +60,13 @@ def setup():
     if env.use_daemontools:
         sudo('apt-get install -y daemontools daemontools-run')
         sudo('mkdir -p /etc/service/%(project_name)s' % env, pty=True)
+    if env.use_supervisor:
+        sudo('easy_install supervisor')
+        sudo('if [ ! -f /etc/supervisord.conf ]; then echo_supervisord_conf > /etc/supervisord.conf; fi', pty=True) # configure that!
+        sudo('mkdir /etc/supervisor', pty=True)
+    if env.use_celery:
+        sudo('apt-get install -y rabbitmq-server') # needs additional deb-repository!
+        sudo('mkdir -p /etc/service/%(project_name)s-celery' % env, pty=True)
         
     # install more Python stuff
     # Don't install setuptools or virtualenv on Ubuntu with easy_install or pip! Only Ubuntu packages work!
@@ -159,6 +168,10 @@ def install_site():
         sudo('cp %(webserver)s.conf /etc/%(webserver)s/sites-available/%(project_name)s' % env, pty=True)
         if env.use_daemontools:
             sudo('cp service-run.sh /etc/service/%(project_name)s/run; chmod a+x /etc/service/%(project_name)s/run;' % env, pty=True)
+        if env.use_supervisor:
+            sudo('cp supervisor.ini /etc/supervisor/%(project_name)s.ini' % env, pty=True)
+        if env.use_celery:
+            sudo('cp service-run-celeryd.sh /etc/service/%(project_name)s-celery/run; chmod a+x /etc/service/%(project_name)s-celery/run;' % env, pty=True)
         # try logrotate
         with settings(warn_only=True):        
             sudo('cp logrotate.conf /etc/logrotate.d/website-%(project_name)s' % env, pty=True)
@@ -198,8 +211,10 @@ def restart_webserver():
     with settings(warn_only=True):
         if env.webserver=='nginx':
             require('path')
-            sudo('kill `cat %(path)s/logs/django.pid`' % env, pty=True) # kill process, daemontools will start it again, see service-run.sh
-            if not env.use_daemontools:
-                require('project_name')
-                run('cd %(path)s; bin/python releases/current/%(project_name)s/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=%(port)s pidfile=./logs/django.pid' % env)
+            if env.use_daemontools:
+                sudo('kill `cat %(path)s/logs/django.pid`' % env, pty=True) # kill process, daemontools will start it again, see service-run.sh
+            if env.use_supervisor:
+                sudo('supervisorctl restart %(project_name)s' % env, pty=True)
+            #require('project_name')
+            #run('cd %(path)s; bin/python releases/current/%(project_name)s/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=%(port)s pidfile=./logs/django.pid' % env)
         sudo('/etc/init.d/%(webserver)s reload' % env, pty=True)

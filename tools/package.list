@@ -369,6 +369,7 @@ python-simplejson       install
 python-support          install
 python-virtualenv       install
 python-webpy          install
+python-yaml          install
 python2.5         install
 python2.5-dev         install
 python2.5-minimal       install
