@@ -214,7 +214,7 @@ def restart_webserver():
             if env.use_daemontools:
                 sudo('kill `cat %(path)s/logs/django.pid`' % env, pty=True) # kill process, daemontools will start it again, see service-run.sh
             if env.use_supervisor:
-                sudo('supervisorctl restart %(project_name)s' % env, pty=True)
+                sudo('supervisorctl restart %(project_name)s:appserver' % env, pty=True)
             #require('project_name')
             #run('cd %(path)s; bin/python releases/current/%(project_name)s/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=%(port)s pidfile=./logs/django.pid' % env)
         sudo('/etc/init.d/%(webserver)s reload' % env, pty=True)
