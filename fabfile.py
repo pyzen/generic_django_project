@@ -56,21 +56,23 @@ def setup():
     sudo('apt-get install -y build-essential python-dev python-setuptools python-imaging python-virtualenv python-yaml')
     # install some version control systems, since we need Django modules in development
     sudo('apt-get install -y git-core') # subversion git-core mercurial
+        
+    # install more Python stuff
+    # Don't install setuptools or virtualenv on Ubuntu with easy_install or pip! Only Ubuntu packages work!
+    sudo('easy_install pip')
 
     if env.use_daemontools:
         sudo('apt-get install -y daemontools daemontools-run')
         sudo('mkdir -p /etc/service/%(project_name)s' % env, pty=True)
     if env.use_supervisor:
-        sudo('easy_install supervisor')
+        sudo('pip install supervisor')
         sudo('if [ ! -f /etc/supervisord.conf ]; then echo_supervisord_conf > /etc/supervisord.conf; fi', pty=True) # configure that!
         sudo('mkdir /etc/supervisor', pty=True)
     if env.use_celery:
         sudo('apt-get install -y rabbitmq-server') # needs additional deb-repository!
-        sudo('mkdir -p /etc/service/%(project_name)s-celery' % env, pty=True)
-        
-    # install more Python stuff
-    # Don't install setuptools or virtualenv on Ubuntu with easy_install or pip! Only Ubuntu packages work!
-    sudo('easy_install pip')
+        if env.use_daemontools:
+            sudo('mkdir -p /etc/service/%(project_name)s-celery' % env, pty=True)
+        # for supervisor, put celery's "program" block into supervisor.ini!
     
     # install webserver and database server
     sudo('apt-get remove -y apache2 apache2-mpm-prefork apache2-utils') # is mostly pre-installed
@@ -166,15 +168,20 @@ def install_site():
     require('release', provided_by=[deploy, setup])
     with cd('%(path)s/releases/%(release)s' % env):
         sudo('cp %(webserver)s.conf /etc/%(webserver)s/sites-available/%(project_name)s' % env, pty=True)
-        if env.use_daemontools:
+        if env.use_daemontools: # activate new service runner
             sudo('cp service-run.sh /etc/service/%(project_name)s/run; chmod a+x /etc/service/%(project_name)s/run;' % env, pty=True)
-        if env.use_supervisor:
+        else: # delete old service dir
+            sudo('if [ -d /etc/service/%(project_name)s ]; then rm -rf /etc/service/%(project_name)s; fi' % env, pty=True)
+        if env.use_supervisor: # activate new supervisor.ini
             sudo('cp supervisor.ini /etc/supervisor/%(project_name)s.ini' % env, pty=True)
+        else: # delete old config file
+            sudo('if [ -f /etc/supervisor/%(project_name)s.ini ]; then supervisorctl %(project_name)s:appserver stop rm /etc/supervisor/%(project_name)s.ini; fi' % env, pty=True)
         if env.use_celery:
             sudo('cp service-run-celeryd.sh /etc/service/%(project_name)s-celery/run; chmod a+x /etc/service/%(project_name)s-celery/run;' % env, pty=True)
         # try logrotate
         with settings(warn_only=True):        
             sudo('cp logrotate.conf /etc/logrotate.d/website-%(project_name)s' % env, pty=True)
+        run('cp -R voucher/templates/tex/* %(path)s/medialibrary/_textemp/' % env, pty=True)
     with settings(warn_only=True):        
         sudo('cd /etc/%(webserver)s/sites-enabled/; ln -s ../sites-available/%(project_name)s %(project_name)s' % env, pty=True)
     
@@ -215,6 +222,8 @@ def restart_webserver():
                 sudo('kill `cat %(path)s/logs/django.pid`' % env, pty=True) # kill process, daemontools will start it again, see service-run.sh
             if env.use_supervisor:
                 sudo('supervisorctl restart %(project_name)s:appserver' % env, pty=True)
+                if env.use_celery:
+                    sudo('supervisorctl restart %(project_name)s:celery' % env, pty=True)
             #require('project_name')
             #run('cd %(path)s; bin/python releases/current/%(project_name)s/manage.py runfcgi method=threaded maxchildren=6 maxspare=4 minspare=2 host=127.0.0.1 port=%(port)s pidfile=./logs/django.pid' % env)
         sudo('/etc/init.d/%(webserver)s reload' % env, pty=True)
