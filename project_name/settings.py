@@ -277,6 +277,7 @@ except ImportError:
 if DEBUG:
     INSTALLED_APPS.append('django.contrib.admindocs')
     INSTALLED_APPS.append('debug_toolbar')
+    MIDDLEWARE_CLASSES.append('debug_toolbar.middleware.DebugToolbarMiddleware') # see also http://github.com/robhudson/django-debug-toolbar/blob/master/README.rst
     LOGGING['handlers']['file'] = {
                 'level':'INFO',
                 'class':'FileHandler',

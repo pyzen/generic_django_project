@@ -12,4 +12,4 @@ south
 #vobject # for django-schedule
 #django-schedule # see http://wiki.github.com/thauber/django-schedule/ or http://github.com/fiee/django-schedule
 #django-guardian
-#django-debug-toolbar
+django-debug-toolbar
