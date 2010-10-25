@@ -23,6 +23,78 @@ INTERNAL_IPS = ('127.0.0.1',)
 if DEBUG:
     TEMPLATE_STRING_IF_INVALID = _(u'STRING_NOT_SET')
 
+# logging: see
+# http://docs.djangoproject.com/en/dev/topics/logging/
+# http://docs.python.org/library/logging.html
+
+# import logging
+# logger = logging.getLogger(__name__)
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(message)s' # %(process)d %(thread)d 
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+#    'filters': {
+#        'special': {
+#            '()': 'project.logging.SpecialFilter',
+#            'foo': 'bar',
+#        }
+#    },
+    'handlers': {
+        'null': {
+            'level':'DEBUG',
+            'class':'django.utils.log.NullHandler',
+        },
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'file':{
+            'level':'INFO',
+            'class':'logging.handlers.TimedRotatingFileHandler',
+            'formatter': 'verbose',
+            'args': [rootrel('logs/info.log'),'D',7,4], # rotate every 7 days, keep 4 old copies
+        },
+        'error_file':{
+            'level':'ERROR',
+            'class':'logging.handlers.TimedRotatingFileHandler',
+            'formatter': 'verbose',
+            'args': [rootrel('logs/error.log'),'D',7,4], # rotate every 7 days, keep 4 old copies
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            #'filters': ['special']
+        }
+    },
+    'loggers': {
+        'django': { # django is the catch-all logger. No messages are posted directly to this logger.
+            'handlers':['null', 'error_file'],
+            'propagate': True,
+            'level':'INFO',
+        },
+        'django.request': { # Log messages related to the handling of requests. 5XX responses are raised as ERROR messages; 4XX responses are raised as WARNING messages.
+            'handlers': ['error_file', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        PROJECT_NAME: {
+            'handlers': ['console', 'file', 'error_file', 'mail_admins'],
+            'level': 'INFO',
+            #'filters': ['special']
+        }
+    }
+}
+
 # ==============================================================================
 # cache settings
 # ==============================================================================
@@ -204,3 +276,16 @@ except ImportError:
     pass
 if DEBUG:
     INSTALLED_APPS.append('django.contrib.admindocs')
+    INSTALLED_APPS.append('debug_toolbar')
+    LOGGING['handlers']['file'] = {
+                'level':'INFO',
+                'class':'FileHandler',
+                'formatter': 'verbose',
+                'args': [rel('logs/info.log'),],
+            }
+    LOGGING['handlers']['error_file'] = {
+                'level':'ERROR',
+                'class':'FileHandler',
+                'formatter': 'verbose',
+                'args': [rel('logs/error.log'),],
+            }
