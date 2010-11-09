@@ -38,6 +38,7 @@ Issues
 * User creation isn't integrated in fabfile setup.
 * Probably security holes - use at your own risk.
 * I could also support runit, but I didn't want to replace init
+* South still doesn't work for me, must overcome problems with several releases and multiple projects accessing the same django app outside of venvs
 
 
 How To
