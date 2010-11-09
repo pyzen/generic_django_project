@@ -3,14 +3,11 @@
 
 {% block title %}{{ feincms_page.title }}{% endblock %}
 
-{% block maincontent %}
+{% block main_content %}
 <div id="breadcrumbs">{% feincms_breadcrumbs feincms_page %}</div>
 <h2>{% block pagetitle %}{{ feincms_page.title }}{% endblock %}</h2>
 {% for content in feincms_page.content.main %}
 	{{ content.render }}
 {% endfor %}
 
-{% endblock %}
-
-{% block rightcol %}
 {% endblock %}

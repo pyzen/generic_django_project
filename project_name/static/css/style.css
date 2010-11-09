@@ -22,32 +22,36 @@ html[lang|="fr"] {
 body {
 	margin: 0 0 0 0;
 	font-family: "Trebuchet MS", Helvetica, Arial, sans-serif;
-    text-align: left;
-    font-size: 85%;
+  text-align: left;
+  font-size: 85%;
 	volume: medium;
 	voice-family: female;
 	pitch: medium;
 }
 
-/* General*/
+/* General */
+
 .clear  { 
 	clear: both; 
 }
+
 .nobreak   { 
 	white-space: nowrap; 
 }
+
 .left {
     vertical-align: middle; 
     float: left;
     text-align: left;
 }
+
 .right {
     float: right;
     text-align: right;
 }
 
 
-/* Titelei */
+/* Titles */
 
 h1, h2, h3, h4, h5, legend {
 	font-style: italic;
@@ -104,7 +108,7 @@ td {
 	visibility: hidden;
 }
 
-/* Bilder */
+/* Images */
 
 img {
 	border: none;
@@ -113,7 +117,7 @@ img {
 
 img.intext-right,
 .intext-right img,
-#maincol p img {
+#yui-main p img {
 	float:right;
 	max-width: 300px;
 	margin-left: 2em;
@@ -131,7 +135,7 @@ img.logotop {
 	padding: 1em 0 1em 0;
 }
 
-/* Listen */
+/* Lists */
 
 ul, ol, dl {
 	margin-left: 0;
@@ -167,25 +171,6 @@ li li {
 
 li li li {
 	margin-left: 4.5em;
-}
-
-
-.rightbox li {
-	list-style-image: none;
-	list-style-type: none;
-	margin-left: 0;
-	font-weight: bold;
-}
-
-.rightbox li li {
-	margin-left: 1.5em;
-	font-weight: normal;
-	background: none;
-}
-
-.rightbox li li li {
-	margin-left: 3em;
-	font-size: 77%;
 }
 
 /* Links */
@@ -251,142 +236,10 @@ input, textarea {
 	display: inline;
 }
 
-/* Bereiche */
-
-#header {
-    width: 100%;
-    height: 160px;
-    clear: both;
-    /* background-color: #fc6;
-	border-bottom: 2px solid #ccc; */
-	background-image: url(../img/kopf_934x156.png);
-	background-position: top left;
-	background-repeat: no-repeat;
-	z-index: 20;
-}
-
-#toptext {
-	width: 99%;
-	height: 20px;
-	padding: 0.25em 0.5em 0.5em 0.5em;
-	font-size: 77%;
-	color: #fc6;
-}
-
-#toplogo {
-}
-
-#header ul.headmenu {
-	font-weight: bold;
-}
-
-#header ul.headmenu li {
-	position: relative;
-	list-style-type: none;
-	list-style-position: outside;
-	display: inline;
-}
-
-#header ul.headmenu a {
-	border: none;
-	color: #fc6;
-}
-
-#header ul.headmenu ul {
-	display: none;
-}
-
-#rightcol, #leftcol {
-	height: 100%;
-	width: 180px;
-	position: absolute;
-	z-index: 1;
-}
-
-#rightcol {
-	right: 0;
-	top:100px;
-	float: right;
-	margin-left: 2em;
-	padding: 1em 0.5em 1em 0.5em;
-}
-
-#leftcol {
-	left: 0;
-	top:140px;
-	float: left;
-	margin-right: 2em;
-	padding: 4em 0.5em 0 35px;
-	background-image: url(../img/leftbox.png);
-	background-repeat: no-repeat;
-	background-position: top left;
-}
-
-#leftcol ul.navlist {
-	color: #c00;
-}
-
-#leftcol ul.navlist a {
-	border: none;
-	color: #c00;
-}
-
-#leftcol ul.navlist > li {
-	color: #c00;
-	min-height: 40px; 
-	padding: 8px 0 0 15px;
-	list-style-type: none;
-	list-style-position: outside;
-	background-image: url(../img/button_gelb.png);
-	background-repeat: no-repeat;
-}
-
-#leftcol ul.navlist > li:hover,
-#leftcol ul.navlist > li.active {
-	background-image: url(../img/button_blau.png);
-}
-
-#leftcol ul.subnavlist {
-	display: none;
-	font-size: 85%;
-}
-
-#leftcol li:hover ul.subnavlist {
-	display: block;
-}
-
-#leftcol ul.subnavlist > li {
-	padding: 0 0 0 0;
-}
-
-#leftcol ul.subnavlist > li:hover {
-	color: white;
-}
-
-#maincol {
-	position: absolute;
-	top: 215px;
-	left: 270px;
-	height: 100%;
-	min-width: 300px;
-	max-width: 60em;
-	padding: 0 5em 2em 0;
-	display: inline-block;
-}
+/* Areas */
 
 #breadcrumbs {
 	font-size: 85%;
 	position: relative;
 	top: -3em;
-}
-
-#main-right {
-	float: right;
-	margin-left: 2em;
-	max-width: 50%;
-}
-
-#main-right img {
-	width: 200px;
-	max-width: 100%;
 }

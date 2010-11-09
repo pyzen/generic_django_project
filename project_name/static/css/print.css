@@ -5,7 +5,7 @@ body {
     padding: 0px;
 }
 
-#header, #topmenu, #leftcol, #rightcol, #footer,
+#hd, #topmenu, #sidebar, #ft,
 .hidden {
     display: none;
 }
