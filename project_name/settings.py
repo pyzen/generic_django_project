@@ -191,7 +191,7 @@ INSTALLED_APPS = [
     PROJECT_NAME,
 ]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.middleware.cache.UpdateCacheMiddleware', # first
     'django.middleware.gzip.GZipMiddleware', # second after UpdateCache
     'django.middleware.common.CommonMiddleware',
@@ -204,7 +204,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.doc.XViewMiddleware', # for local IPs
     'django.middleware.cache.FetchFromCacheMiddleware', # last
-)
+]
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.auth',
