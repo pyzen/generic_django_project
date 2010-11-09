@@ -67,7 +67,7 @@ def setup():
     if env.use_supervisor:
         sudo('pip install supervisor')
         sudo('if [ ! -f /etc/supervisord.conf ]; then echo_supervisord_conf > /etc/supervisord.conf; fi', pty=True) # configure that!
-        sudo('mkdir /etc/supervisor', pty=True)
+        sudo('if [ ! -d /etc/supervisor ]; then mkdir /etc/supervisor; fi', pty=True)
     if env.use_celery:
         sudo('apt-get install -y rabbitmq-server') # needs additional deb-repository!
         if env.use_daemontools:
@@ -181,7 +181,6 @@ def install_site():
         # try logrotate
         with settings(warn_only=True):        
             sudo('cp logrotate.conf /etc/logrotate.d/website-%(project_name)s' % env, pty=True)
-        run('cp -R voucher/templates/tex/* %(path)s/medialibrary/_textemp/' % env, pty=True)
     with settings(warn_only=True):        
         sudo('cd /etc/%(webserver)s/sites-enabled/; ln -s ../sites-available/%(project_name)s %(project_name)s' % env, pty=True)
     
