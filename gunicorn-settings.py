@@ -3,7 +3,7 @@
 import os
 from project_name import settings
 
-bind = '127.0.0.1:'+str(os.getuid())[1:]
+bind = '127.0.0.1:8'+str(os.getuid())[1:]
 workers = 2
 #worker_class = 'eventlet'
 #max_requests = 2048
