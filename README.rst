@@ -130,11 +130,11 @@ Modules:
 .. _logrotate: http://www.linux-praxis.de/lpic1/manpages/logrotate.html
 .. _virtualenvs: http://virtualenv.readthedocs.org/
 
-.. _makeuser.sh: tools/makeuser.sh
-.. _settings.py: project_name/settings.py
-.. _settings_local.py: project_name/settings_local.py
-.. _gunicorn-settings.py: gunicorn-settings.py
-.. _fabfile.py: fabfile.py
-.. _supervisor.ini: supervisor.ini
-.. _service-run.sh: service-run.sh
-.. _nginx.conf: nginx.conf
+.. _makeuser.sh: blob/master/tools/makeuser.sh
+.. _settings.py: blob/master/project_name/settings.py
+.. _settings_local.py: blob/master/project_name/settings_local.py
+.. _gunicorn-settings.py: blob/master/gunicorn-settings.py
+.. _fabfile.py: blob/master/fabfile.py
+.. _supervisor.ini: blob/master/supervisor.ini
+.. _service-run.sh: blob/master/service-run.sh
+.. _nginx.conf: blob/master/nginx.conf
