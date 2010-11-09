@@ -76,10 +76,10 @@ Page.create_content_type(MediaFileContent, POSITION_CHOICES=(
     ('center', _(u'center')),
     ))
 
-Page.create_content_type(EventContent, POSITION_CHOICES=(
-    #('left', _(u'left')),
-    ('right', _(u'right')),
-    ('center', _(u'center')),
-    ))
-
-Page.create_content_type(CalendarContent)
+#Page.create_content_type(EventContent, POSITION_CHOICES=(
+#    #('left', _(u'left')),
+#    ('right', _(u'right')),
+#    ('center', _(u'center')),
+#    ))
+#
+#Page.create_content_type(CalendarContent)
