@@ -231,6 +231,10 @@ input, textarea {
 	margin: 1em 0 1em 0;
 }
 
+.vcard .type {
+  display: none;
+}
+
 .vcard .n div,
 .vcard .postal-code {
 	display: inline;
