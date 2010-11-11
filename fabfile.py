@@ -197,6 +197,8 @@ def symlink_current_release():
         run('ln -s %(release)s releases/current' % env, pty=True)
         if env.use_photologue:
             run('cd releases/current/%(project_name)s/static; rm -rf photologue; ln -s %(path)s/photologue;' % env, pty=True)
+        # copy South migrations from previous release, if there are any
+        run('cd releases/previous/%(project_name)s; if [ -d migrations ]; then cp -r migrations ../../current/%(project_name)s/; fi' % env, pty=True)
     
 def migrate(param=''):
     "Update the database"
