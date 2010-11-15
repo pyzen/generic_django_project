@@ -108,19 +108,22 @@ USE_ETAGS = True
 # email and error-notify settings
 # ==============================================================================
 
+YOUR_DOMAIN = 'example.com' % since I'm getting error messages from stupid cloners...
+
 ADMINS = (
-    ('Henning Hraban Ramm', 'hraban@fiee.net'),
+    #('Henning Hraban Ramm', 'hraban@fiee.net'), # don't send your errors to me!
+    ('You', 'root@%s' % YOUR_DOMAIN),
 )
 
 MANAGERS = ADMINS
 
-DEFAULT_FROM_EMAIL = '%s@fiee.net' % PROJECT_NAME
-SERVER_EMAIL = 'error-notify@fiee.net'
+DEFAULT_FROM_EMAIL = '%s@%s' % (PROJECT_NAME, YOUR_DOMAIN)
+SERVER_EMAIL = 'error-notify@%s' % YOUR_DOMAIN
 
 EMAIL_SUBJECT_PREFIX = '[%s] ' % PROJECT_NAME
-EMAIL_HOST = 'mail.fiee.net'
+EMAIL_HOST = 'mail.%s' % YOUR_DOMAIN
 EMAIL_PORT = 25
-EMAIL_HOST_USER = '%s@fiee.net' % PROJECT_NAME
+EMAIL_HOST_USER = '%s@%s' % (PROJECT_NAME, YOUR_DOMAIN)
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
